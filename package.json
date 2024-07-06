@@ -1,0 +1,22 @@
+{
+    "name": "anime1-show-list",
+    "version": "1.0.0",
+    "type": "module",
+    "license": "MIT",
+    "devDependencies": {
+      "@types/node": "^20.14.9",
+      "@types/pug": "^2.0.10",
+      "ts-node": "^10.9.2",
+      "typescript": "^5.5.2"
+    },
+    "dependencies": {
+      "@types/he": "^1.2.3",
+      "he": "^1.2.0",
+      "pug": "^3.0.3"
+    },
+    "scripts": {
+        "build": "make build",
+        "watch": "make watch",
+        "clean": "make clean"
+    }
+}

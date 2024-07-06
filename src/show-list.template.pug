@@ -1,0 +1,99 @@
+doctype html
+html(lang='zh-Hant')
+
+    head
+        meta(name='description' content='anime1.me 全季度動漫列表')
+        meta(name='viewport' content='width=device-width, initial-scale=1.0')
+
+        title.
+            anime1.me 全季度動漫列表
+
+        style(type='text/css').
+            body {
+                padding: 8px;
+                font-size: 20px;
+            }
+
+            header {
+                padding-bottom: 32px;
+                font-size: 2em;
+                font-weight: bold;
+            }
+
+            main {
+                display: flex;
+                flex-direction: column;
+                gap: 32px;
+            }
+
+            table, th, td {
+                border: 1px solid black;
+                border-collapse: collapse;
+            }
+            table {
+                table-layout: fixed;
+                width: 100%;
+            }
+            th {
+                text-align: center;
+            }
+            td {
+                word-break: break-word;
+                padding: 4px;
+            }
+
+            a { text-decoration: none; }
+            a:hover { text-decoration: underline; }
+
+            .not-allowed { cursor: not-allowed; }
+
+    body
+        header.
+            anime1.me 全季度動漫列表
+
+        main
+            -   const year_groups = Object.groupBy(list, x => x.year);
+            -   const years = Object.keys(year_groups).sort((a, b) => b - a);
+
+            for year in years
+                -   const season_groups = Object.groupBy(year_groups[year], x => x.season);
+
+                for season_list, season in season_groups
+                    -   const year_season_id = [year, season].join('-');
+
+                    table
+                        -   const weekday_groups = Object.groupBy(season_list, x => x.weekday);
+                        -   const weekday_count = Object.keys(weekday_groups).length.toString();
+
+                        thead
+                            tr
+                                th(colspan=weekday_count)
+                                    div(id=year_season_id).
+                                        #{year}，#{season}
+                            tr
+                                for weekday_list, weekday in weekday_groups
+                                    th.
+                                        #{weekday}
+
+                        tbody
+                            -   let current_height = 0;
+                            -
+                                const max_height = Math.max(
+                                    ...Object.values(weekday_groups).map(g => g.length)
+                                );
+
+                            while current_height < max_height
+                                tr
+                                    for weekday_list, weekday in weekday_groups
+                                        td
+                                            if current_height < weekday_list.length
+                                                -   const show = weekday_list[current_height];
+
+                                                if show.link
+                                                    a(href=show.link).
+                                                        #{show.name}
+                                                else
+                                                    span(class='not-allowed').
+                                                        #{show.name}
+
+                                -   current_height += 1;

@@ -1,0 +1,31 @@
+{
+    "compilerOptions": {
+        "module": "ESNext",
+        "target": "ESNext",
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "outDir": "dist",
+        "skipLibCheck": true,
+        "pretty": true,
+        "strict": true,
+        "declaration": true,
+        "esModuleInterop": true,
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        "allowUnusedLabels": false,
+        "noUnusedParameters": true,
+        "forceConsistentCasingInFileNames": true,
+        "allowSyntheticDefaultImports": true,
+        "noImplicitAny": true,
+        "resolveJsonModule": true,
+        "downlevelIteration": true,
+    },
+    "compileOnSave": false,
+    "buildOnSave": false,
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules"
+    ],
+}
