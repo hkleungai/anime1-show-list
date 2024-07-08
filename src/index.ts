@@ -172,10 +172,9 @@ class Json_String {
 }
 
 class Format {
-    static string(src: string, options: pug.LocalsObject) {
-        const compiled = pug.compile(`<regex src="${src}"/>`)(options);
-        const { regex } = compiled.match(/^<regex src="(?<regex>.*?)"\/>$/)!.groups!;
-        return HtmlEntity.decode(regex);
+    static string(val: string, options: pug.LocalsObject) {
+        const compiled = pug.compile(`<tag val="${val}"/>`)(options);
+        return compiled.match(/^<tag val="(?<val>.*?)"\/>$/)!.groups!.val;
     }
 }
 
@@ -190,7 +189,8 @@ class Regex_Builder {
     build(options: Record<string, RegExp>): Regex_Builder {
         let pattern_options: Record<string, string> = {};
         for (const key in options) {
-            pattern_options[key] = Regex_Builder.create_regex_string_from(options[key]);
+            const pattern = new RegExp(options[key], '');
+            pattern_options[key] = Regex_Builder.create_regex_string_from(pattern);
         }
         const computed_regex = new RegExp(this.create_pattern_from(pattern_options), this.flags);
         return new Regex_Builder(computed_regex);
@@ -218,20 +218,16 @@ class Regex_Constants {
         return /<tr>(?<row>.*?)<\/tr>/g;
     };
 
-    private static table_cell_global_builder = (
-        new Regex_Builder(/<td>(?!<strong>[#{weekdays}]<\/strong>)(?<cell>.*?)<\/td>/g)
-    );
-
     static get TABLE_CELL_GLOBAL() {
         return (
-            Regex_Constants.table_cell_global_builder
+            new Regex_Builder(/<td>(?!<strong>[!{weekdays}]<\/strong>)(?<cell>.*?)<\/td>/g)
                 .build({ weekdays: new RegExp(Date_Time_Constants.SITE_WEEKDAYS.join('|')) })
                 .regex
         );
     };
 
     private static show_link_builder = (
-        new Regex_Builder(/^<a href="#{link}">(?<name>.*?)(?:<\/a>.*)?$/)
+        new Regex_Builder(/^<a href="!{link}">(?<name>.*?)(?:<\/a>.*)?$/)
     );
 
     static get SHOW_EXTERNAL_NAME_LINK_QUERY() {
@@ -244,7 +240,7 @@ class Regex_Constants {
 
     private static show_cat_link_builder = (
         Regex_Constants.show_link_builder
-            .build({ link: /#{host}\/\?cat=(?<linkQuery>\d+)/ })
+            .build({ link: /!{host}\/\?cat=(?<linkQuery>\d+)/ })
     );
 
     static get SHOW_HENTAI_NAME_LINK_QUERY() {
@@ -258,7 +254,7 @@ class Regex_Constants {
     static get SHOW_NORMAL_NAME_LINK_QUERY() {
         return (
             Regex_Constants.show_cat_link_builder
-                .build({ host: /(#{host})?/ })
+                .build({ host: /(?:!{host})?/ })
                 .build({ host: new RegExp(Site_Constants.NORMAL_HOME) })
                 .regex
         );
@@ -305,13 +301,13 @@ namespace Date_Time_Constants {
             { label: 'zh_HK', locales: 'zh-HK', weekday: 'long' } as const,
             { label: 'ja_JP', locales: 'ja-JP', weekday: 'long' } as const,
         ];
-        const display = '#{zh_HK}（#{ja_JP}）';
+        const display = '!{zh_HK}（!{ja_JP}）';
         return new Weekdays(formats, display).build();
     })()
 
     export const SITE_WEEKDAYS = (() => {
         const formats = [{ label: 'zh_HK', locales: 'zh-HK', weekday: 'narrow' } as const];
-        const display = '#{zh_HK}';
+        const display = '!{zh_HK}';
         return new Weekdays(formats, display).build();
     })();
 }
