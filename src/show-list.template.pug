@@ -35,6 +35,7 @@ html(lang='zh-Hant')
                 width: 100%;
             }
             th {
+                font-weight: normal;
                 text-align: center;
             }
             td {
@@ -47,53 +48,118 @@ html(lang='zh-Hant')
 
             .not-allowed { cursor: not-allowed; }
 
+            .year input { display: none; }
+            .season__table table { display: none; }
+
+            .season-label__outer {
+                display: flex;
+                flex-direction: row;
+                border: 1px solid black;
+                height: 48px;
+                border-bottom: 0;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                padding: 8px;
+            }
+
+            .season-label__outer label {
+                width: 100%;
+                text-align: center;
+                align-content: center;
+                border: 1px dotted black;
+                border-radius: 10px;
+                height: 75%;
+            }
+
+        -   let season_count = 1;
+
+        while season_count <= 4
+            -   const nth_type = `:nth-of-type(${season_count})`;
+            -   const nth_input_checked = `.year input${nth_type}:checked`;
+            -   const nth_input_unchecked = `.year input${nth_type}:not(:checked)`;
+
+            style.
+                #{nth_input_checked} ~ .season__table table#{nth_type} {
+                    display: table;
+                }
+                #{nth_input_checked} ~ .season-label__outer label#{nth_type} {
+                    color: black;
+                    font-weight: bold;
+                    border-style: solid;
+                    border-width: 2px;
+                }
+                #{nth_input_unchecked} ~ .season-label__outer label#{nth_type}:hover {
+                    cursor: pointer;
+                    color: black;
+                    font-size: 22px;
+                    margin-top: -1px;
+                    border-width: 2px;
+                }
+
+            -   season_count += 1
+
+
     body
         header.
             anime1.me 全季度動漫列表
 
         main
-            -   const year_groups = Object.groupBy(list, x => x.year);
-            -   const years = Object.keys(year_groups).sort((a, b) => b - a);
+            -   const year_group = Object.groupBy(list, x => x.year);
+            -   const years = Object.keys(year_group).sort((a, b) => b - a);
 
             for year in years
-                -   const season_groups = Object.groupBy(year_groups[year], x => x.season);
+                section(class='year' id=year)
+                    -   const season_group = Object.groupBy(year_group[year], x => x.season);
+                    -   function create_label_id(season) { return `input-id__${year}-${season}` };
 
-                for season_list, season in season_groups
-                    -   const year_season_id = [year, season].join('-');
+                    -   let season_count = 0;
 
-                    table
-                        -   const weekday_groups = Object.groupBy(season_list, x => x.weekday);
-                        -   const weekday_count = Object.keys(weekday_groups).length.toString();
+                    for _, season in season_group
+                        input(
+                            type='radio'
+                            name=`input-name__${year}`
+                            id=create_label_id(season)
+                            checked=(season_count === 0)
+                        ).
 
-                        thead
-                            tr
-                                th(colspan=weekday_count)
-                                    div(id=year_season_id).
-                                        #{year}，#{season}
-                            tr
-                                for weekday_list, weekday in weekday_groups
-                                    th.
-                                        #{weekday}
+                        -   season_count++
 
-                        tbody
-                            -   let current_height = 0;
-                            -
-                                const max_height = Math.max(
-                                    ...Object.values(weekday_groups).map(g => g.length)
-                                );
+                    div(class='season-label__outer')
+                        for _, season in season_group
+                            label(for=create_label_id(season)).
+                                #{year}，#{season}
 
-                            while current_height < max_height
-                                tr
-                                    for weekday_list, weekday in weekday_groups
-                                        td
-                                            if current_height < weekday_list.length
-                                                -   const show = weekday_list[current_height];
+                    div(class='season__table')
+                        for season_shows, season in season_group
+                            -   const week_group = Object.groupBy(season_shows, x => x.weekday);
 
-                                                if show.link
-                                                    a(href=show.link).
-                                                        #{show.name}
-                                                else
-                                                    span(class='not-allowed').
-                                                        #{show.name}
+                            table
+                                thead
+                                    tr
+                                        for shows, weekday in week_group
+                                            th.
+                                                #{weekday}
 
-                                -   current_height += 1;
+                                tbody
+                                    -   let row_height = 0;
+                                    -
+                                        const max_height = Math.max(
+                                            ...Object.values(week_group).map(g => g.length)
+                                        );
+
+                                    while row_height < max_height
+                                        tr
+                                            for shows, weekday in week_group
+                                                td
+                                                    if row_height < shows.length
+                                                        -   const show = shows[row_height];
+
+                                                        if show.link
+                                                            a(href=show.link).
+                                                                #{show.name}
+                                                        else
+                                                            span(class='not-allowed').
+                                                                #{show.name}
+
+                                        -   row_height += 1;
