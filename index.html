@@ -45,17 +45,21 @@ a:hover { text-decoration: underline; }
     display: flex;
     flex-direction: row;
     border: 1px solid black;
-    height: 32px;
+    height: 48px;
     border-bottom: 0;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px;
 }
 
 .season-label__outer label {
-    color: #888888;
-
     width: 100%;
     text-align: center;
     align-content: center;
-    border-bottom: 0;
+    border: 1px dotted black;
+    border-radius: 10px;
+    height: 75%;
 }
 </style><style>.year input:nth-of-type(1):checked ~ .season__table table:nth-of-type(1) {
     display: table;
@@ -63,12 +67,15 @@ a:hover { text-decoration: underline; }
 .year input:nth-of-type(1):checked ~ .season-label__outer label:nth-of-type(1) {
     color: black;
     font-weight: bold;
+    border-style: solid;
+    border-width: 2px;
 }
 .year input:nth-of-type(1):not(:checked) ~ .season-label__outer label:nth-of-type(1):hover {
     cursor: pointer;
     color: black;
     font-size: 22px;
     margin-top: -1px;
+    border-width: 2px;
 }
 </style><style>.year input:nth-of-type(2):checked ~ .season__table table:nth-of-type(2) {
     display: table;
@@ -76,12 +83,15 @@ a:hover { text-decoration: underline; }
 .year input:nth-of-type(2):checked ~ .season-label__outer label:nth-of-type(2) {
     color: black;
     font-weight: bold;
+    border-style: solid;
+    border-width: 2px;
 }
 .year input:nth-of-type(2):not(:checked) ~ .season-label__outer label:nth-of-type(2):hover {
     cursor: pointer;
     color: black;
     font-size: 22px;
     margin-top: -1px;
+    border-width: 2px;
 }
 </style><style>.year input:nth-of-type(3):checked ~ .season__table table:nth-of-type(3) {
     display: table;
@@ -89,12 +99,15 @@ a:hover { text-decoration: underline; }
 .year input:nth-of-type(3):checked ~ .season-label__outer label:nth-of-type(3) {
     color: black;
     font-weight: bold;
+    border-style: solid;
+    border-width: 2px;
 }
 .year input:nth-of-type(3):not(:checked) ~ .season-label__outer label:nth-of-type(3):hover {
     cursor: pointer;
     color: black;
     font-size: 22px;
     margin-top: -1px;
+    border-width: 2px;
 }
 </style><style>.year input:nth-of-type(4):checked ~ .season__table table:nth-of-type(4) {
     display: table;
@@ -102,12 +115,15 @@ a:hover { text-decoration: underline; }
 .year input:nth-of-type(4):checked ~ .season-label__outer label:nth-of-type(4) {
     color: black;
     font-weight: bold;
+    border-style: solid;
+    border-width: 2px;
 }
 .year input:nth-of-type(4):not(:checked) ~ .season-label__outer label:nth-of-type(4):hover {
     cursor: pointer;
     color: black;
     font-size: 22px;
     margin-top: -1px;
+    border-width: 2px;
 }
 </style></head><body><header>anime1.me 全季度動漫列表
 </header><main><section class="year" id="2024"><input type="radio" name="input-name__2024" id="input-id__2024-夏季" checked><input type="radio" name="input-name__2024" id="input-id__2024-春季"><input type="radio" name="input-name__2024" id="input-id__2024-冬季"><div class="season-label__outer"><label for="input-id__2024-夏季">2024，夏季
