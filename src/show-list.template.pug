@@ -1,5 +1,7 @@
 doctype html
 html(lang='zh-Hant')
+    -   const year_group = Object.groupBy(list, x => x.year);
+    -   const years = Object.keys(year_group).sort((a, b) => b - a);
 
     head
         meta(name='description' content='anime1.me 全季度動漫列表')
@@ -18,12 +20,6 @@ html(lang='zh-Hant')
                 padding-bottom: 32px;
                 font-size: 2em;
                 font-weight: bold;
-            }
-
-            main {
-                display: flex;
-                flex-direction: column;
-                gap: 32px;
             }
 
             table, th, td {
@@ -48,118 +44,176 @@ html(lang='zh-Hant')
 
             .not-allowed { cursor: not-allowed; }
 
-            .year input { display: none; }
-            .season__table table { display: none; }
+            main > input { display: none; }
+            .year_group > section { display: none; }
+            .year > input { display: none; }
+            .season-group > table { display: none; }
 
-            .season-label__outer {
-                display: flex;
-                flex-direction: row;
+            .label__outer {
                 border: 1px solid black;
-                height: 48px;
                 border-bottom: 0;
-                align-items: center;
-                justify-content: center;
                 gap: 8px;
                 padding: 8px;
             }
 
-            .season-label__outer label {
+            .label__outer--flex {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .label__outer--grid-col-5 {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+            }
+
+            .label__outer > label {
                 width: 100%;
                 text-align: center;
                 align-content: center;
                 border: 1px dotted black;
                 border-radius: 10px;
-                height: 75%;
+                height: 38px;
             }
 
+        -   let display_block = [];
+        -   let display_table = [];
+        -   let checked_label = [];
+        -   let unchecked_label_hover = [];
+
+        -   let year_count = 1;
+        while year_count <= years.length
+            -   const label = '.label__outer.label__outer--grid-col-5 label';
+            -   const nth_type = `:nth-of-type(${year_count})`;
+            -   const checked_input = `main > input${nth_type}:checked`;
+            -   const unchecked_input = `main > input${nth_type}:not(:checked)`;
+            -   display_block.push(`${checked_input} ~ .year_group section.year${nth_type}`);
+            -   checked_label.push(`${checked_input} ~ ${label}${nth_type}`);
+            -   unchecked_label_hover.push(`${unchecked_input} ~ ${label}${nth_type}:hover`);
+            -   year_count += 1
+
         -   let season_count = 1;
-
         while season_count <= 4
+            -   const label = '.label__outer.label__outer--flex label';
             -   const nth_type = `:nth-of-type(${season_count})`;
-            -   const nth_input_checked = `.year input${nth_type}:checked`;
-            -   const nth_input_unchecked = `.year input${nth_type}:not(:checked)`;
-
-            style.
-                #{nth_input_checked} ~ .season__table table#{nth_type} {
-                    display: table;
-                }
-                #{nth_input_checked} ~ .season-label__outer label#{nth_type} {
-                    color: black;
-                    font-weight: bold;
-                    border-style: solid;
-                    border-width: 2px;
-                }
-                #{nth_input_unchecked} ~ .season-label__outer label#{nth_type}:hover {
-                    cursor: pointer;
-                    color: black;
-                    font-size: 22px;
-                    margin-top: -1px;
-                    border-width: 2px;
-                }
-
+            -   const checked_input = `.year > input${nth_type}:checked`;
+            -   const unchecked_input = `.year > input${nth_type}:not(:checked)`;
+            -   display_table.push(`${checked_input} ~ .season-group table${nth_type}`);
+            -   checked_label.push(`${checked_input} ~ ${label}${nth_type}`);
+            -   unchecked_label_hover.push(`${unchecked_input} ~ ${label}${nth_type}:hover`);
             -   season_count += 1
 
+        style(type='text/css').
+            !{display_block.join(',\n')} {
+                display: block;
+            }
 
+        style(type='text/css').
+            !{display_table.join(',\n')} {
+                display: table;
+            }
+
+        style(type='text/css').
+            !{checked_label.join(',\n')} {
+                color: black;
+                font-weight: bold;
+                border-style: solid;
+                border-width: 2px;
+            }
+
+        style(type='text/css').
+            !{unchecked_label_hover.join(',\n')} {
+                cursor: pointer;
+                color: black;
+                font-size: 22px;
+                margin-top: -1px;
+                border-width: 2px;
+            }
     body
         header.
             anime1.me 全季度動漫列表
 
         main
-            -   const year_group = Object.groupBy(list, x => x.year);
-            -   const years = Object.keys(year_group).sort((a, b) => b - a);
+            -
+                function create_year_toggle_label_id(year) {
+                    return `input-id__year-toggle__${year}`;
+                };
 
+            -   let _year_count = 0;
             for year in years
-                section(class='year' id=year)
-                    -   const season_group = Object.groupBy(year_group[year], x => x.season);
-                    -   function create_label_id(season) { return `input-id__${year}-${season}` };
+                input(
+                    type='radio'
+                    name=`input-name__year-toggle`
+                    id=create_year_toggle_label_id(year)
+                    checked=(_year_count === 0)
+                ).
+                -   _year_count++
 
-                    -   let season_count = 0;
+            div(class='label__outer label__outer--grid-col-5')
+                for year in years
+                    label(for=create_year_toggle_label_id(year)).
+                        #{year}
 
-                    for _, season in season_group
-                        input(
-                            type='radio'
-                            name=`input-name__${year}`
-                            id=create_label_id(season)
-                            checked=(season_count === 0)
-                        ).
+            div(class='year_group')
+                for year in years
+                    section(class='year' id=year)
+                        -   const season_group = Object.groupBy(year_group[year], x => x.season);
+                        -
+                            function create_season_toggle_label_id(season) {
+                                return `input-id__season-toggle__${year}-${season}`;
+                            };
 
-                        -   season_count++
+                        -   let season_count = 0;
 
-                    div(class='season-label__outer')
                         for _, season in season_group
-                            label(for=create_label_id(season)).
-                                #{year}，#{season}
+                            input(
+                                type='radio'
+                                name=`input-name__season-toggle__${year}`
+                                id=create_season_toggle_label_id(season)
+                                checked=(season_count === 0)
+                            ).
 
-                    div(class='season__table')
-                        for season_shows, season in season_group
-                            -   const week_group = Object.groupBy(season_shows, x => x.weekday);
+                            -   season_count++
 
-                            table
-                                thead
-                                    tr
-                                        for shows, weekday in week_group
-                                            th.
-                                                #{weekday}
+                        div(class='label__outer label__outer--flex')
+                            for _, season in season_group
+                                label(for=create_season_toggle_label_id(season)).
+                                    #{season}
 
-                                tbody
-                                    -   let row_height = 0;
-                                    -
-                                        const max_height = Math.max(
-                                            ...Object.values(week_group).map(g => g.length)
-                                        );
+                        div(class='season-group')
+                            for season_shows, season in season_group
+                                -
+                                    const week_group = (
+                                        Object.groupBy(season_shows, x => x.weekday)
+                                    );
 
-                                    while row_height < max_height
+                                table
+                                    thead
                                         tr
                                             for shows, weekday in week_group
-                                                td
-                                                    if row_height < shows.length
-                                                        -   const show = shows[row_height];
+                                                th.
+                                                    #{weekday}
 
-                                                        if show.link
-                                                            a(href=show.link).
-                                                                #{show.name}
-                                                        else
-                                                            span(class='not-allowed').
-                                                                #{show.name}
+                                    tbody
+                                        -   let row_height = 0;
+                                        -
+                                            const max_height = Math.max(
+                                                ...Object.values(week_group).map(g => g.length)
+                                            );
 
-                                        -   row_height += 1;
+                                        while row_height < max_height
+                                            tr
+                                                for shows, weekday in week_group
+                                                    td
+                                                        if row_height < shows.length
+                                                            -   const show = shows[row_height];
+
+                                                            if show.link
+                                                                a(href=show.link).
+                                                                    #{show.name}
+                                                            else
+                                                                span(class='not-allowed').
+                                                                    #{show.name}
+
+                                            -   row_height += 1;
