@@ -9,9 +9,6 @@ import Site_Constants from './Site_Constants.mjs';
 
 async function main() {
     const dist_dir_path = path.resolve('dist');
-    if (fs.existsSync(dist_dir_path) && fs.lstatSync(dist_dir_path).isDirectory()) {
-        fs.rmSync(dist_dir_path, { recursive: true });
-    }
     fs.mkdirSync(dist_dir_path, { recursive: true });
 
     const dist_show_list_page_out_path = path.resolve(dist_dir_path, 'index.html');
