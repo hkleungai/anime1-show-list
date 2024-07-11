@@ -91,7 +91,7 @@ html(lang='zh-Hant')
             -   display_block.push(`${checked_input} ~ .year_group section.year${nth_type}`);
             -   checked_label.push(`${checked_input} ~ ${label}${nth_type}`);
             -   unchecked_label_hover.push(`${unchecked_input} ~ ${label}${nth_type}:hover`);
-            -   year_count += 1
+            -   year_count += 1;
 
         -   let season_count = 1;
         while season_count <= 4
@@ -102,19 +102,17 @@ html(lang='zh-Hant')
             -   display_table.push(`${checked_input} ~ .season-group table${nth_type}`);
             -   checked_label.push(`${checked_input} ~ ${label}${nth_type}`);
             -   unchecked_label_hover.push(`${unchecked_input} ~ ${label}${nth_type}:hover`);
-            -   season_count += 1
+            -   season_count += 1;
 
         style(type='text/css').
             !{display_block.join(',\n')} {
                 display: block;
             }
 
-        style(type='text/css').
             !{display_table.join(',\n')} {
                 display: table;
             }
 
-        style(type='text/css').
             !{checked_label.join(',\n')} {
                 color: black;
                 font-weight: bold;
@@ -122,7 +120,6 @@ html(lang='zh-Hant')
                 border-width: 2px;
             }
 
-        style(type='text/css').
             !{unchecked_label_hover.join(',\n')} {
                 cursor: pointer;
                 color: black;
