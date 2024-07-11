@@ -4,6 +4,9 @@ import path from 'node:path';
 import HtmlEntity from 'he';
 import pug from 'pug';
 
+import Json_String from './Json_String.mjs';
+import Site_Constants from './Site_Constants.mjs';
+
 async function main() {
     const dist_dir_path = path.resolve('dist');
     if (fs.existsSync(dist_dir_path) && fs.lstatSync(dist_dir_path).isDirectory()) {
@@ -14,6 +17,7 @@ async function main() {
     const dist_show_list_page_out_path = path.resolve(dist_dir_path, 'index.html');
 
     const full_show_json = await create_full_show_json();
+
     const show_list_template_path = path.resolve('src', 'show-list.template.pug');
     const compiled_html = pug.compileFile(show_list_template_path)({ list: full_show_json });
 
@@ -167,10 +171,6 @@ namespace Show_Json_Builder {
     );
 }
 
-class Json_String {
-    static build(obj: any) { return JSON.stringify(obj, null, 4); }
-}
-
 class Format {
     static string(val: string, options: pug.LocalsObject) {
         const compiled = pug.compile(`<tag val="${val}"/>`)(options);
@@ -318,20 +318,4 @@ namespace Date_Time_Constants {
     export type Season_Key = keyof typeof Date_Time_Constants.Season;
     export type Season_Value = (typeof Date_Time_Constants.Season)[Season_Key];
 }
-
-namespace Site_Constants {
-    export const NORMAL_HOME = 'https://anime1.me';
-
-    export const HENTAI_HOME = 'https://anime1.pw';
-
-    export const Show_Type = {
-        HENTAI: 'HENTAI',
-        NORMAL: 'NORMAL',
-        EXTERNAL: 'EXTERNAL',
-        NOT_IN_SITE: 'NOT_IN_SITE',
-    } as const satisfies Record<string, string>;
-
-    export type Show_Type_Key = keyof typeof Site_Constants.Show_Type;
-}
-
 main().catch(console.error);
