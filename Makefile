@@ -17,6 +17,8 @@ DISABLE_WARNING = \
 
 DIST = dist
 
+ENABLE = --enable-source-maps
+
 ENV = TS_NODE_PRETTY=true
 
 IMPORT = --import="data:text/javascript,								\
@@ -34,6 +36,6 @@ IMPORT = --import="data:text/javascript,								\
 
 NODE = node
 
-RUN = $(ENV) $(NODE) $(IMPORT) $(DISABLE_WARNING)
+RUN = $(ENV) $(NODE) $(IMPORT) $(DISABLE_WARNING) $(ENABLE)
 
 WATCH_PATH = --watch-path=src
