@@ -16,25 +16,26 @@ async function main() {
 async function retrieve_table_list_json() {
     const home_response = await fetch(Site_Constants.NORMAL_HOME).then(r => r.text());
 
-    const homelist_match = home_response.match(
-        /(?:id="datatable-js"><\/script>)<script type="text\/javascript" src="(?<src>.*?)" id="homelist-js"><\/script>/
-    );
-    if (!homelist_match) {
+    const homelist_tag_regex = /<script.*src="(?<src>(?!<\/script>).*)" id="homelist-js/;
+    const homelist_tag_match = home_response.match(homelist_tag_regex);
+    if (!homelist_tag_match) {
         throw new Error('Cannot find script tag with id="homelist-js"');
     }
 
-    const homelist_src = homelist_match!.groups!.src;
+    const homelist_src = homelist_tag_match!.groups!.src;
     const homelist_full_src = new URL(homelist_src, Site_Constants.NORMAL_HOME).href;
-
     const homelist_response = await fetch(homelist_full_src).then(r => r.text());
 
     const create_fake_jquery_string = create_fake_jquery.toString();
-    const create_fake_jquery_body = (
-        create_fake_jquery_string.slice(
-            create_fake_jquery_string.indexOf("{") + 1,
-            create_fake_jquery_string.lastIndexOf("}")
-        )
+    const create_fake_jquery_body_match = create_fake_jquery_string.match(
+        /function\s+\w+\(.*\)\s+\{(?<fn_body>[\s\S]+)\}/
     );
+    if (!create_fake_jquery_body_match) {
+        throw new Error('Unreachable! create_fake_jquery() down there must match the regex!');
+    }
+
+    const create_fake_jquery_body = create_fake_jquery_body_match.groups!.fn_body;
+
     const table_list_args = await new Function(`
         ${create_fake_jquery_body};
         return ${homelist_response};
