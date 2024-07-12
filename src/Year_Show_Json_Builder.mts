@@ -108,7 +108,7 @@ class Year_Show_Json_Builder {
 
     private get link() {
         const season_query = Date_Time_Constants.Season[this.season];
-        return `${Site_Constants.NORMAL_HOME}/${this.year}年${season_query}新番`;
+        return `${Site_Constants.NORMAL_HOME}/${this.year}年${season_query}季新番`;
     }
 }
 

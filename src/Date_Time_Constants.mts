@@ -5,10 +5,10 @@ namespace Date_Time_Constants {
     export const CURRENT_YEAR = new Date().getFullYear();
 
     export const Season = {
-        FALL: '秋季',
-        SUMMER: '夏季',
-        SPRING: '春季',
-        WINTER: '冬季',
+        FALL:   '秋',
+        SUMMER: '夏',
+        SPRING: '春',
+        WINTER: '冬',
     } as const satisfies Record<string, string>;
 
     export const OUTPUT_WEEKDAYS = (() => {
