@@ -14,7 +14,7 @@ export default class Full_Show_Json_Builder {
     }
 
     async build(): Promise<Year_Show_Json_Builder.Show_Json_Entry[]> {
-        const showChunks = await Promise.all(this.builder_list.map(async (builder) => {
+        const show_chunks = await Promise.all(this.builder_list.map(async (builder) => {
             try {
                 return await builder.build();
             } catch {
@@ -22,7 +22,7 @@ export default class Full_Show_Json_Builder {
             }
         }));
 
-        return showChunks.flatMap((chunk) => chunk);
+        return show_chunks.flatMap((chunk) => chunk);
     }
 }
 

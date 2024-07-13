@@ -14,8 +14,9 @@ export default class Weekdays {
         return Weekdays.range_0_6.map((day) => {
             let formatter_lookup: Record<string, string> = {};
             for (const { label, locales, weekday } of this.formats) {
-                const dateTimeFormat = new Intl.DateTimeFormat(locales, { weekday });
-                formatter_lookup[label] = dateTimeFormat.format(new Date(Date.UTC(2024, 6, day)));
+                const date_time_format = new Intl.DateTimeFormat(locales, { weekday });
+                const nice_date = new Date(Date.UTC(2024, 6, day));
+                formatter_lookup[label] = date_time_format.format(nice_date);
             }
             return Format.string(this.display, formatter_lookup);
         }) as [string, string, string, string, string, string, string];

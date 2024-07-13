@@ -1,4 +1,4 @@
-import HtmlEntity from 'he';
+import Html_Entity from 'he';
 
 import Date_Time_Constants from './Date_Time_Constants.mjs';
 import Json_String from './Json_String.mjs';
@@ -7,7 +7,7 @@ import Site_Constants from './Site_Constants.mjs';
 
 class Year_Show_Json_Builder {
     constructor(private year: number, private season: Date_Time_Constants.Season_Key) {
-        if (!this.isYearValid(year)) {
+        if (!this.is_year_valid(year)) {
             throw new Error(`Invalid year ${year}`);
         }
     }
@@ -24,7 +24,7 @@ class Year_Show_Json_Builder {
                 return [];
             }
 
-            const partialResult = {
+            const partial_result = {
                 weekday: Date_Time_Constants.OUTPUT_WEEKDAYS[index],
                 season: Date_Time_Constants.Season[this.season],
                 year: this.year,
@@ -37,12 +37,12 @@ class Year_Show_Json_Builder {
 
             const show_normal_match = show.match(Regex_Constants.SHOW_NORMAL_NAME_LINK_QUERY);
             if (show_normal_match) {
-                const { name, linkQuery } = show_normal_match.groups!;
+                const { name, link_query } = show_normal_match.groups!;
                 return {
-                    ...partialResult,
+                    ...partial_result,
                     type: Site_Constants.Show_Type.NORMAL,
-                    name: HtmlEntity.decode(name),
-                    link: `${Site_Constants.NORMAL_HOME}/?cat=${linkQuery}`,
+                    name: Html_Entity.decode(name),
+                    link: `${Site_Constants.NORMAL_HOME}/?cat=${link_query}`,
                 };
             }
 
@@ -52,18 +52,18 @@ class Year_Show_Json_Builder {
             }
 
             return {
-                ...partialResult,
+                ...partial_result,
                 type: Site_Constants.Show_Type.NOT_IN_SITE,
-                name: HtmlEntity.decode(show),
+                name: Html_Entity.decode(show),
                 link: null,
             };
         }));
     }
 
-    private static scrape_table_from(htmlString: string): string[][] {
-        const body_match = htmlString.match(Regex_Constants.TABLE_BODY);
+    private static scrape_table_from(html_string: string): string[][] {
+        const body_match = html_string.match(Regex_Constants.TABLE_BODY);
         if (!body_match) {
-            throw new Error(`Cannot find table body on ${Json_String.build({ htmlString })}`);
+            throw new Error(`Cannot find table body on ${Json_String.build({ html_string })}`);
         }
 
         const { body } = body_match.groups!;
@@ -86,7 +86,7 @@ class Year_Show_Json_Builder {
         });
     }
 
-    private isYearValid(year: number) {
+    private is_year_valid(year: number) {
         return (
             Number.isSafeInteger(year)
             && year >= Date_Time_Constants.EARLIEST_YEAR

@@ -33,7 +33,7 @@ export default class Regex_Constants {
 
     private static show_cat_link_builder = (
         Regex_Constants.show_link_builder
-            .build({ link: /!{host}\/\?cat=(?<linkQuery>\d+)/ })
+            .build({ link: /!{host}\/\?cat=(?<link_query>\d+)/ })
     );
 
     static get SHOW_HENTAI_NAME_LINK_QUERY() {
