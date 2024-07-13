@@ -1,16 +1,43 @@
 doctype html
-html(lang='zh-Hant')
+html(lang = 'zh-Hant')
     -   const year_group = Object.groupBy(list, x => x.year);
     -   const years = Object.keys(year_group).sort((a, b) => b - a);
 
     head
-        meta(name='description' content='anime1.me 全季度動漫列表')
-        meta(name='viewport' content='width=device-width, initial-scale=1.0')
+        meta(name = 'description'   content = 'anime1.me 全季度動漫列表').
+        meta(name = 'viewport'      content = 'width=device-width, initial-scale=1.0').
 
         title.
             anime1.me 全季度動漫列表
 
-        style(type='text/css').
+        -   let display_block = [];
+        -   let display_table = [];
+        -   let checked_label = [];
+        -   let unchecked_label_hover = [];
+
+        -   let year_count = 1;
+        while year_count <= years.length
+            -   const label = '.nav.nav__grid-col-5 label';
+            -   const nth_type = `:nth-of-type(${year_count})`;
+            -   const checked_input = `main > input${nth_type}:checked`;
+            -   const unchecked_input = `main > input${nth_type}:not(:checked)`;
+            -   display_block.push(`${checked_input} ~ .year_group section.year${nth_type}`);
+            -   checked_label.push(`${checked_input} ~ ${label}${nth_type}`);
+            -   unchecked_label_hover.push(`${unchecked_input} ~ ${label}${nth_type}:hover`);
+            -   year_count += 1;
+
+        -   let season_count = 1;
+        while season_count <= 4
+            -   const label = '.nav.nav__flex label';
+            -   const nth_type = `:nth-of-type(${season_count})`;
+            -   const checked_input = `.year > input${nth_type}:checked`;
+            -   const unchecked_input = `.year > input${nth_type}:not(:checked)`;
+            -   display_table.push(`${checked_input} ~ .season-group table${nth_type}`);
+            -   checked_label.push(`${checked_input} ~ ${label}${nth_type}`);
+            -   unchecked_label_hover.push(`${unchecked_input} ~ ${label}${nth_type}:hover`);
+            -   season_count += 1;
+
+        style(type = 'text/css').
             body {
                 padding: 8px;
                 font-size: 20px;
@@ -53,26 +80,26 @@ html(lang='zh-Hant')
             .year > input { display: none; }
             .season-group > table { display: none; }
 
-            .label__outer {
+            .nav {
                 border: 1px solid black;
                 border-bottom: 0;
                 gap: 8px;
                 padding: 8px;
             }
 
-            .label__outer--flex {
+            .nav__flex {
                 display: flex;
                 flex-direction: row;
                 align-items: center;
                 justify-content: center;
             }
 
-            .label__outer--grid-col-5 {
+            .nav__grid-col-5 {
                 display: grid;
                 grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
             }
 
-            .label__outer > label {
+            .nav > label {
                 width: 100%;
                 text-align: center;
                 align-content: center;
@@ -81,41 +108,9 @@ html(lang='zh-Hant')
                 height: 38px;
             }
 
-        -   let display_block = [];
-        -   let display_table = [];
-        -   let checked_label = [];
-        -   let unchecked_label_hover = [];
+            !{display_block.join(',\n')} { display: block; }
 
-        -   let year_count = 1;
-        while year_count <= years.length
-            -   const label = '.label__outer.label__outer--grid-col-5 label';
-            -   const nth_type = `:nth-of-type(${year_count})`;
-            -   const checked_input = `main > input${nth_type}:checked`;
-            -   const unchecked_input = `main > input${nth_type}:not(:checked)`;
-            -   display_block.push(`${checked_input} ~ .year_group section.year${nth_type}`);
-            -   checked_label.push(`${checked_input} ~ ${label}${nth_type}`);
-            -   unchecked_label_hover.push(`${unchecked_input} ~ ${label}${nth_type}:hover`);
-            -   year_count += 1;
-
-        -   let season_count = 1;
-        while season_count <= 4
-            -   const label = '.label__outer.label__outer--flex label';
-            -   const nth_type = `:nth-of-type(${season_count})`;
-            -   const checked_input = `.year > input${nth_type}:checked`;
-            -   const unchecked_input = `.year > input${nth_type}:not(:checked)`;
-            -   display_table.push(`${checked_input} ~ .season-group table${nth_type}`);
-            -   checked_label.push(`${checked_input} ~ ${label}${nth_type}`);
-            -   unchecked_label_hover.push(`${unchecked_input} ~ ${label}${nth_type}:hover`);
-            -   season_count += 1;
-
-        style(type='text/css').
-            !{display_block.join(',\n')} {
-                display: block;
-            }
-
-            !{display_table.join(',\n')} {
-                display: table;
-            }
+            !{display_table.join(',\n')} { display: table; }
 
             !{checked_label.join(',\n')} {
                 color: black;
@@ -141,55 +136,56 @@ html(lang='zh-Hant')
                     return `input-id__year-toggle__${year}`;
                 };
 
-            -   let _year_count = 0;
+            -   let should_checked_year = true;
             for year in years
                 input(
-                    type='radio'
-                    name=`input-name__year-toggle`
-                    id=create_year_toggle_label_id(year)
-                    checked=(_year_count === 0)
+                    checked = should_checked_year
+                    id      = create_year_toggle_label_id(year)
+                    name    = 'input-name__year-toggle'
+                    type    = 'radio'
                 ).
-                -   _year_count++
+                -   should_checked_year = false;
 
-            div(class='label__outer label__outer--grid-col-5')
+            nav(class = 'nav nav__grid-col-5')
                 for year in years
-                    label(for=create_year_toggle_label_id(year)).
-                        #{year}
+                    label(for = create_year_toggle_label_id(year)).
+                        #{year}年
 
-            div(class='year_group')
+            section(class = 'year_group')
                 for year in years
-                    section(class='year' id=year)
+                    section(
+                        class = 'year'
+                        id = year
+                    )
                         -   const season_group = Object.groupBy(year_group[year], x => x.season);
                         -
                             function create_season_toggle_label_id(season) {
                                 return `input-id__season-toggle__${year}-${season}`;
                             };
 
-                        -   let season_count = 0;
-
+                        -   let should_checked_season = true;
                         for _, season in season_group
                             input(
-                                type='radio'
-                                name=`input-name__season-toggle__${year}`
-                                id=create_season_toggle_label_id(season)
-                                checked=(season_count === 0)
+                                checked = should_checked_season
+                                id      = create_season_toggle_label_id(season)
+                                name    = `input-name__season-toggle__${year}`
+                                type    = 'radio'
                             ).
+                            -   should_checked_season = false;
 
-                            -   season_count++
-
-                        div(class='label__outer label__outer--flex')
+                        nav(class = 'nav nav__flex')
                             for _, season in season_group
-                                label(for=create_season_toggle_label_id(season)).
+                                label(for = create_season_toggle_label_id(season)).
                                     #{season}季
 
-                        div(class='season-group')
+                        section(class = 'season-group')
                             for season_shows, season in season_group
                                 -
                                     const week_group = (
                                         Object.groupBy(season_shows, x => x.weekday)
                                     );
 
-                                table
+                                table(id = `table-id__${year}-${season}`)
                                     thead
                                         tr
                                             for shows, weekday in week_group
@@ -211,12 +207,15 @@ html(lang='zh-Hant')
 
                                                         td
                                                             if show.link
-                                                                a(href=show.link).
+                                                                a(href = show.link).
                                                                     #{show.name}
                                                             else
-                                                                span(class='not-allowed').
+                                                                span(class = 'not-allowed').
                                                                     #{show.name}
                                                     else if row_height === shows.length
-                                                        td(rowspan=(max_height - row_height) class='deleted').
+                                                        td(
+                                                            class = 'deleted'
+                                                            rowspan = max_height - row_height
+                                                        ).
 
                                             -   row_height += 1;
