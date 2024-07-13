@@ -4,9 +4,7 @@ namespace Site_Constants {
     export const HENTAI_HOME = 'https://anime1.pw';
 
     export const Show_Type = {
-        HENTAI: 'HENTAI',
         NORMAL: 'NORMAL',
-        EXTERNAL: 'EXTERNAL',
         NOT_IN_SITE: 'NOT_IN_SITE',
     } as const satisfies Record<string, string>;
 

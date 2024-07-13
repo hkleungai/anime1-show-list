@@ -32,13 +32,7 @@ class Year_Show_Json_Builder {
 
             const show_hentai_match = show.match(Regex_Constants.SHOW_HENTAI_NAME_LINK_QUERY);
             if (show_hentai_match) {
-                const { name, linkQuery } = show_hentai_match.groups!;
-                return {
-                    ...partialResult,
-                    type: Site_Constants.Show_Type.HENTAI,
-                    name: HtmlEntity.decode(name),
-                    link: `${Site_Constants.HENTAI_HOME}/?cat=${linkQuery}`,
-                };
+                return [];
             }
 
             const show_normal_match = show.match(Regex_Constants.SHOW_NORMAL_NAME_LINK_QUERY);
@@ -54,13 +48,7 @@ class Year_Show_Json_Builder {
 
             const show_external_match = show.match(Regex_Constants.SHOW_EXTERNAL_NAME_LINK_QUERY);
             if (show_external_match) {
-                const { name, link } = show_external_match.groups!;
-                return {
-                    ...partialResult,
-                    type: Site_Constants.Show_Type.EXTERNAL,
-                    name: HtmlEntity.decode(name),
-                    link,
-                };
+                return [];
             }
 
             return {
