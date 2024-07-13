@@ -29,7 +29,6 @@ jobs:
                 run: |
                     yarn install --frozen-lockfile;
                     yarn build INPUT="src/index.ts";
-                    yarn build INPUT="src/wip.fetch-home-list.ts";
             -   name: Deploy
                 uses: peaceiris/actions-gh-pages@v4
                 with:
