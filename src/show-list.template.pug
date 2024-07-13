@@ -39,6 +39,10 @@ html(lang='zh-Hant')
                 padding: 4px;
             }
 
+            td.deleted {
+                background: repeating-linear-gradient(-45deg, grey 0 2px, #ccc 0 10px);
+            }
+
             a { text-decoration: none; }
             a:hover { text-decoration: underline; }
 
@@ -202,15 +206,17 @@ html(lang='zh-Hant')
                                         while row_height < max_height
                                             tr
                                                 for shows, weekday in week_group
-                                                    td
-                                                        if row_height < shows.length
-                                                            -   const show = shows[row_height];
+                                                    if row_height < shows.length
+                                                        -   const show = shows[row_height];
 
+                                                        td
                                                             if show.link
                                                                 a(href=show.link).
                                                                     #{show.name}
                                                             else
                                                                 span(class='not-allowed').
                                                                     #{show.name}
+                                                    else if row_height === shows.length
+                                                        td(rowspan=(max_height - row_height) class='deleted').
 
                                             -   row_height += 1;
