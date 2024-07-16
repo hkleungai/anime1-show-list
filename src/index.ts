@@ -48,14 +48,27 @@ async function retrieve_real_full_show_json() {
         throw new Error('Detected malformed missing shows from homelist-js\'s table.');
     }
 
-    return full_show_json.concat(missing_show_list.map((show: any[]) => ({
+    const missing_show_json = missing_show_list.map((show: any[]) => ({
         weekday: Date_Time_Constants.UNKNOWN_WEEKDAY,
         season: show[4],
         year: Number(show[3]),
         type: Site_Constants.Show_Type.NORMAL,
-        name: show[1],
+        name: show[1] as string,
         link: `${Site_Constants.NORMAL_HOME}/?cat=${show[0]}`
-    })));
+    }));
+
+    const full_show_name_to_show_lookup = Map.groupBy(full_show_json, (show) => show.name);
+    const non_missing_names = new Set<string>();
+    for (const { link: missing_link, name: missing_name } of missing_show_json) {
+        if (full_show_name_to_show_lookup.has(missing_name)) {
+            full_show_name_to_show_lookup.get(missing_name)![0].link = missing_link;
+            non_missing_names.add(missing_name);
+        }
+    }
+
+    return full_show_json.concat(
+        missing_show_json.filter(({ name }) => !non_missing_names.has(name))
+    );
 }
 
 async function retrieve_table_list_json(): Promise<Array<any>> {
