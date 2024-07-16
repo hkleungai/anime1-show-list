@@ -26,6 +26,8 @@ namespace Date_Time_Constants {
         return new Weekdays(formats, display).build();
     })();
 
+    export const UNKNOWN_WEEKDAY = '不明';
+
     export type Season_Key = keyof typeof Date_Time_Constants.Season;
     export type Season_Value = (typeof Date_Time_Constants.Season)[Season_Key];
 }

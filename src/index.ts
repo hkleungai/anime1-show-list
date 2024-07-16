@@ -22,10 +22,14 @@ async function main() {
 
 async function retrieve_real_full_show_json() {
     const full_show_json = await DEFAULT_FULL_SHOW_JSON_BUILDER.build();
-    const full_show_links = full_show_json.flatMap((full_show) => Number(full_show.link?.match(/(?<id>\d+)$/)!.groups!.id) || []);;
+    const full_show_links = full_show_json.flatMap((full_show) => (
+        Number(full_show.link?.match(/(?<id>\d+)$/)!.groups!.id) || [])
+    );
 
     const table_list = await retrieve_table_list_json();
-    const table_show_links: number[] = table_list.flatMap((row_show: unknown[]) => Number(row_show[0]) || []);
+    const table_show_links = table_list.flatMap((row_show: unknown[]) => (
+        Number(row_show[0]) || []
+    ));
 
     const missing_show_ids = [...new Set(table_show_links).difference(new Set(full_show_links))];
 
@@ -45,16 +49,16 @@ async function retrieve_real_full_show_json() {
     }
 
     return full_show_json.concat(missing_show_list.map((show: any[]) => ({
-        "weekday": "不明",
-        "season": show[4],
-        "year": Number(show[3]),
-        "type": Site_Constants.Show_Type.NORMAL,
-        "name": show[1],
-        "link": `https://anime1.me/?cat=${show[0]}`
+        weekday: Date_Time_Constants.UNKNOWN_WEEKDAY,
+        season: show[4],
+        year: Number(show[3]),
+        type: Site_Constants.Show_Type.NORMAL,
+        name: show[1],
+        link: `${Site_Constants.NORMAL_HOME}/?cat=${show[0]}`
     })));
 }
 
-async function retrieve_table_list_json() {
+async function retrieve_table_list_json(): Promise<Array<any>> {
     const home_response = await fetch(Site_Constants.NORMAL_HOME).then(r => r.text());
 
     const homelist_tag_regex = /<script.*src="(?<src>(?!<\/script>).*)" id="homelist-js/;
