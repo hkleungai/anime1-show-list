@@ -185,12 +185,15 @@ html(lang = 'zh-Hant')
                                         Object.groupBy(season_shows, x => x.weekday)
                                     );
 
+                                    const has_few_weekdays = Object.keys(week_group).length < 2;
+
                                 table(id = `table-id__${year}-${season}`)
-                                    thead
-                                        tr
-                                            for shows, weekday in week_group
-                                                th.
-                                                    #{weekday}
+                                    if (!has_few_weekdays)
+                                        thead
+                                            tr
+                                                for shows, weekday in week_group
+                                                    th.
+                                                        #{weekday}
 
                                     tbody
                                         -   let row_height = 0;
