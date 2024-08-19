@@ -15,7 +15,7 @@
       "pug": "^3.0.3"
     },
     "scripts": {
-        "build": "make build",
+        "start": "make start",
         "watch": "make watch",
         "clean": "make clean"
     }

@@ -1,6 +1,6 @@
-.PHONY: build watch clean
+.PHONY: start watch clean
 
-build:
+start:
 	$(RUN) $(INPUT)
 
 watch:
