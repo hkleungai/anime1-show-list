@@ -15,7 +15,10 @@ async function main() {
 
     const real_full_show_json = await retrieve_real_full_show_json();
     const show_list_template_path = path.resolve('src', 'show-list.template.pug');
-    const compiled_html = pug.compileFile(show_list_template_path)({ list: real_full_show_json });
+    const compiled_html = pug.compileFile(show_list_template_path)({
+        list: real_full_show_json,
+        sorted_season_lookup: Date_Time_Constants.Season,
+    });
 
     fs.writeFileSync(dist_show_list_page_out_path, compiled_html);
 }

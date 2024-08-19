@@ -164,25 +164,34 @@ html(lang = 'zh-Hant')
                             };
 
                         -   let should_checked_season = true;
-                        for _, season in season_group
+                        for season, season_key in sorted_season_lookup
+                            if (!Object.hasOwn(season_group, season))
+                                - continue
+
                             input(
                                 checked = should_checked_season
-                                id      = create_season_toggle_label_id(season)
+                                id      = create_season_toggle_label_id(season_key)
                                 name    = `input-name__season-toggle__${year}`
                                 type    = 'radio'
                             ).
                             -   should_checked_season = false;
 
                         nav(class = 'nav nav__flex')
-                            for _, season in season_group
-                                label(for = create_season_toggle_label_id(season)).
+                            for season, season_key in sorted_season_lookup
+                                if (!Object.hasOwn(season_group, season))
+                                    - continue
+
+                                label(for = create_season_toggle_label_id(season_key)).
                                     #{season}季
 
                         section(class = 'season-group')
-                            for season_shows, season in season_group
+                            for season in sorted_season_lookup
+                                if (!Object.hasOwn(season_group, season))
+                                    - continue
+
                                 -
                                     const week_group = (
-                                        Object.groupBy(season_shows, x => x.weekday)
+                                        Object.groupBy(season_group[season], x => x.weekday)
                                     );
 
                                     const has_few_weekdays = Object.keys(week_group).length < 2;
