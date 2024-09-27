@@ -30,19 +30,20 @@ async function retrieve_real_full_show_json() {
     );
 
     const table_list = await retrieve_table_list_json();
-    const table_show_links = table_list.flatMap((row_show: unknown[]) => (
+
+    const table_show_links = table_list.flatMap((row_show) => (
         Number(row_show[0]) || []
     ));
 
     const missing_show_ids = [...new Set(table_show_links).difference(new Set(full_show_links))];
 
     const missing_show_id_set = new Set(missing_show_ids);
-    const missing_show_list = table_list.filter((row_show: unknown[]) => (
+    const missing_show_list = table_list.filter((row_show) => (
         missing_show_id_set.has(Number(row_show[0]))
     ));
 
     const SEASON_DISPLAYS = Object.values(Date_Time_Constants.Season) as string[];
-    const has_well_formed_missing_shows = missing_show_list.every((row_show: unknown[]) => (
+    const has_well_formed_missing_shows = missing_show_list.every((row_show) => (
         /^\d{4}$/.test(String(row_show[3]))
         && SEASON_DISPLAYS.includes(String(row_show[4]))
     ));
@@ -57,15 +58,18 @@ async function retrieve_real_full_show_json() {
         year: Number(show[3]),
         type: Site_Constants.Show_Type.NORMAL,
         name: show[1] as string,
-        link: `${Site_Constants.NORMAL_HOME}/?cat=${show[0]}`
+        link: `${Site_Constants.NORMAL_HOME}/?cat=${show[0]}`,
+        episodes: show[2],
     }));
 
     const full_show_name_to_show_lookup = Map.groupBy(full_show_json, (show) => show.name);
     const non_missing_names = new Set<string>();
-    for (const { link: missing_link, name: missing_name } of missing_show_json) {
-        if (full_show_name_to_show_lookup.has(missing_name)) {
-            full_show_name_to_show_lookup.get(missing_name)![0].link = missing_link;
-            non_missing_names.add(missing_name);
+    for (const [id, name, episodes] of table_list) {
+        if (full_show_name_to_show_lookup.has(name)) {
+            const show = full_show_name_to_show_lookup.get(name)![0];
+            show.link ||= `${Site_Constants.NORMAL_HOME}/?cat=${id}`;
+            show.episodes ||= episodes;
+            non_missing_names.add(name);
         }
     }
 
@@ -74,7 +78,22 @@ async function retrieve_real_full_show_json() {
     );
 }
 
-async function retrieve_table_list_json(): Promise<Array<any>> {
+/**
+ * - Id
+ * - Name / Label
+ * - Episodes
+ * - Year
+ * - Season
+ * - 字幕組
+ */
+async function retrieve_table_list_json(): Promise<Array<[
+    number,
+    string,
+    string,
+    string,
+    string,
+    string,
+]>> {
     const home_response = await fetch(Site_Constants.NORMAL_HOME).then(r => r.text());
 
     const homelist_tag_regex = /<script.*src="(?<src>(?!<\/script>).*)" id="homelist-js/;

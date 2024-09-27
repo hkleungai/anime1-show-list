@@ -43,6 +43,7 @@ class Year_Show_Json_Builder {
                     type: Site_Constants.Show_Type.NORMAL,
                     name: Html_Entity.decode(name),
                     link: `${Site_Constants.NORMAL_HOME}/?cat=${link_query}`,
+                    episodes: '',
                 };
             }
 
@@ -56,6 +57,7 @@ class Year_Show_Json_Builder {
                 type: Site_Constants.Show_Type.NOT_IN_SITE,
                 name: Html_Entity.decode(show),
                 link: null,
+                episodes: '',
             };
         }));
     }
@@ -107,6 +109,7 @@ namespace Year_Show_Json_Builder {
             season: Date_Time_Constants.Season_Value;
             year: number;
             name: string;
+            episodes: string;
         }
         & (
             | {

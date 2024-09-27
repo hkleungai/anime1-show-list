@@ -75,6 +75,15 @@ html(lang = 'zh-Hant')
 
             .not-allowed { cursor: not-allowed; }
 
+            p.no-margin-block {
+                margin-block-start: 0;
+                margin-block-end: 0;
+            }
+
+            .italic {
+                font-style: italic;
+            }
+
             main > input { display: none; }
             .year_group > section { display: none; }
             .year > input { display: none; }
@@ -214,20 +223,37 @@ html(lang = 'zh-Hant')
                                         while row_height < max_height
                                             tr
                                                 for shows, weekday in week_group
-                                                    if row_height < shows.length
-                                                        -   const show = shows[row_height];
+                                                    if row_height > shows.length
+                                                        - continue
 
-                                                        td
-                                                            if show.link
-                                                                a(href = show.link).
-                                                                    #{show.name}
-                                                            else
-                                                                span(class = 'not-allowed').
-                                                                    #{show.name}
-                                                    else if row_height === shows.length
+                                                    if row_height === shows.length
                                                         td(
                                                             class = 'deleted'
                                                             rowspan = max_height - row_height
                                                         ).
+
+                                                        - continue
+
+                                                    -   const show = shows[row_height];
+
+                                                    td
+                                                        if (!show.link)
+                                                            span(class = 'not-allowed').
+                                                                #{show.name}
+
+                                                            - continue
+
+                                                        if (!show.episodes)
+                                                            a(href = show.link).
+                                                                #{show.name}
+
+                                                            - continue
+
+                                                        p(class = 'no-margin-block')
+                                                            a(href = show.link).
+                                                                #{show.name}
+
+                                                        p(class = 'no-margin-block italic').
+                                                            集數：#{show.episodes}
 
                                             -   row_height += 1;
