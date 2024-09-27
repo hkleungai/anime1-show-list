@@ -52,25 +52,29 @@ async function retrieve_real_full_show_json() {
         throw new Error('Detected malformed missing shows from homelist-js\'s table.');
     }
 
-    const missing_show_json = missing_show_list.map((show: any[]) => ({
+    const missing_show_json = missing_show_list.map((show) => ({
         weekday: Date_Time_Constants.UNKNOWN_WEEKDAY,
-        season: show[4],
+        season: show[4] as Date_Time_Constants.Season_Value,
         year: Number(show[3]),
         type: Site_Constants.Show_Type.NORMAL,
         name: show[1] as string,
         link: `${Site_Constants.NORMAL_HOME}/?cat=${show[0]}`,
         episodes: show[2],
+        id: show[0],
     }));
 
-    const full_show_name_to_show_lookup = Map.groupBy(full_show_json, (show) => show.name);
+    const show_id_to_show_lookup = Map.groupBy(full_show_json, (show) => show.id);
     const non_missing_names = new Set<string>();
     for (const [id, name, episodes] of table_list) {
-        if (full_show_name_to_show_lookup.has(name)) {
-            const show = full_show_name_to_show_lookup.get(name)![0];
+        if (!show_id_to_show_lookup.has(id)) {
+            continue;
+        }
+        for (const show of show_id_to_show_lookup.get(id)!) {
+            show.id ||= id;
             show.link ||= `${Site_Constants.NORMAL_HOME}/?cat=${id}`;
             show.episodes ||= episodes;
-            non_missing_names.add(name);
         }
+        non_missing_names.add(name);
     }
 
     return full_show_json.concat(

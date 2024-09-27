@@ -43,6 +43,7 @@ class Year_Show_Json_Builder {
                     type: Site_Constants.Show_Type.NORMAL,
                     name: Html_Entity.decode(name),
                     link: `${Site_Constants.NORMAL_HOME}/?cat=${link_query}`,
+                    id: Number(link_query),
                     episodes: '',
                 };
             }
@@ -57,6 +58,7 @@ class Year_Show_Json_Builder {
                 type: Site_Constants.Show_Type.NOT_IN_SITE,
                 name: Html_Entity.decode(show),
                 link: null,
+                id: null,
                 episodes: '',
             };
         }));
@@ -114,10 +116,12 @@ namespace Year_Show_Json_Builder {
         & (
             | {
                 type: Omit<Site_Constants.Show_Type_Key, 'NOT_IN_SITE'>;
+                id: number;
                 link: string;
             }
             | {
                 type: 'NOT_IN_SITE';
+                id: null;
                 link: null;
             }
         )
