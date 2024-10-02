@@ -7,7 +7,7 @@ import { DEFAULT_FULL_SHOW_JSON_BUILDER } from './Full_Show_Json_Builder.mjs';
 import Site_Constants from './Site_Constants.mjs';
 import Date_Time_Constants from './Date_Time_Constants.mjs';
 
-async function main() {
+void async function main() {
     const dist_dir_path = path.resolve('dist');
     fs.mkdirSync(dist_dir_path, { recursive: true });
 
@@ -21,7 +21,7 @@ async function main() {
     });
 
     fs.writeFileSync(dist_show_list_page_out_path, compiled_html);
-}
+}();
 
 async function retrieve_real_full_show_json() {
     const full_show_json = await DEFAULT_FULL_SHOW_JSON_BUILDER.build();
@@ -148,5 +148,3 @@ function create_fake_jquery() {
         return promise;
     };
 }
-
-main().catch(console.error);
