@@ -13,10 +13,5 @@
       "@types/he": "^1.2.3",
       "he": "^1.2.0",
       "pug": "^3.0.3"
-    },
-    "scripts": {
-        "start": "make start",
-        "watch": "make watch",
-        "clean": "make clean"
     }
 }

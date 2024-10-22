@@ -1,3 +1,34 @@
+#!/bin/sh
+':' //; DISABLE_WARNING=$(echo "                    \
+':' //;     --disable-warning='DEP0180'             \
+':' //;     --disable-warning='ExperimentalWarning' \
+':' //; " | sed -E "s=':' //;==g; s=^ +| +$==g; s= += =g");
+':' //;
+':' //; ENABLE=$(echo "             \
+':' //;     --enable-source-maps    \
+':' //; " | sed -E "s=':' //;==g; s=^ +| +$==g; s= += =g");
+':' //;
+':' //; ENV=$(echo "                \
+':' //;     TS_NODE_PRETTY=true     \
+':' //; " | sed -E "s=':' //;==g; s=^ +| +$==g; s= += =g");
+':' //;
+':' //; IMPORT=$(echo "                                                             \
+':' //;     data:text/javascript,                                                   \
+':' //;         import { register } from 'node:module';                             \
+':' //;         import { setUncaughtExceptionCaptureCallback } from 'node:process'; \
+':' //;         import { pathToFileURL } from 'node:url';                           \
+':' //;                                                                             \
+':' //;         setUncaughtExceptionCaptureCallback(console.error);                 \
+':' //;                                                                             \
+':' //;         const import_url = pathToFileURL(import.meta.url).href;             \
+':' //;         register('ts-node/esm', import_url);                                \
+':' //; " | sed -E "s=':' //;==g; s=^ +| +$==g; s= += =g");
+':' //; IMPORT="--import=\"$IMPORT\""
+':' //;
+':' //; sh -c "$ENV node $IMPORT $DISABLE_WARNING $ENABLE $@ $0";
+':' //;
+':' //; exit;
+
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -8,6 +39,8 @@ import Site_Constants from './Site_Constants.mjs';
 import Date_Time_Constants from './Date_Time_Constants.mjs';
 
 void async function main() {
+    cmd_print();
+
     const dist_dir_path = path.resolve('dist');
     fs.mkdirSync(dist_dir_path, { recursive: true });
 
@@ -147,4 +180,14 @@ function create_fake_jquery() {
 
         return promise;
     };
+}
+
+function cmd_print() {
+    const [first, ...rest] = process.argv.concat(process.execArgv);
+
+    console.log(`\x1b[90m$ ${first}            \x1b[0m`);
+
+    for (const arg of rest) {
+        console.log(`\x1b[90m    ${arg}        \x1b[0m`);
+    }
 }

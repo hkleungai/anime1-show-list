@@ -28,7 +28,8 @@ jobs:
                 shell: bash
                 run: |
                     yarn install --frozen-lockfile;
-                    yarn start INPUT="src/index.ts";
+                    chmod +x ./src/index.ts;
+                    ./src/index.ts;
             -   name: Deploy
                 uses: peaceiris/actions-gh-pages@v4
                 with:
