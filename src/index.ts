@@ -133,7 +133,7 @@ async function retrieve_table_list_json(): Promise<Array<[
 ]>> {
     const home_response = await fetch(Site_Constants.NORMAL_HOME).then(r => r.text());
 
-    const homelist_tag_regex = /<script.*src="(?<src>(?!<\/script>).*)" id="homelist-js/;
+    const homelist_tag_regex = /<script id="homelist-js" src="(?<src>.*?)"/;
     const homelist_tag_match = home_response.match(homelist_tag_regex);
     if (!homelist_tag_match) {
         throw new Error('Cannot find script tag with id="homelist-js"');
