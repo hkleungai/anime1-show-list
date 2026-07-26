@@ -27,8 +27,9 @@ jobs:
             -   name: Build
                 shell: bash
                 run: |
-                    yarn install --frozen-lockfile;
+                    pnpm install --frozen-lockfile;
                     chmod +x ./src/index.ts;
+                    pnpm tsc --noEmit;
                     ./src/index.ts;
             -   name: Deploy
                 uses: peaceiris/actions-gh-pages@v4
