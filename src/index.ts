@@ -133,13 +133,18 @@ async function retrieve_table_list_json(): Promise<Array<[
 ]>> {
     const home_response = await fetch(Site_Constants.NORMAL_HOME).then(r => r.text());
 
+    let homelist_src: string;
+
     const homelist_tag_regex = /<script id="homelist-js" src="(?<src>.*?)"/;
     const homelist_tag_match = home_response.match(homelist_tag_regex);
-    if (!homelist_tag_match) {
-        throw new Error('Cannot find script tag with id="homelist-js"');
+
+    if (homelist_tag_match) {
+        homelist_src = homelist_tag_match!.groups!.src;
+    } else {
+        console.warn('Cannot find script tag with id="homelist-js". Try the Fallback...');
+        homelist_src = '//sta.anicdn.com/homelist.min.js'
     }
 
-    const homelist_src = homelist_tag_match!.groups!.src;
     const homelist_full_src = new URL(homelist_src, Site_Constants.NORMAL_HOME).href;
     const homelist_response = await fetch(homelist_full_src).then(r => r.text());
 
@@ -162,8 +167,12 @@ async function retrieve_table_list_json(): Promise<Array<[
         throw new Error('Cannot retrieve ajax url for table_list at homelist.js');
     }
 
-    const table_list_href = new URL(table_list_args.ajax.url, Site_Constants.NORMAL_HOME).href;
-    return await fetch(table_list_href).then(r => r.json());
+    try {
+        const table_list_href = new URL(table_list_args.ajax.url, Site_Constants.NORMAL_HOME).href;
+        return await fetch(table_list_href).then(r => r.json());
+    } catch {
+        return await fetch('https://anime1.me/animelist.json').then(r => r.json());
+    }
 }
 
 function create_fake_jquery() {
